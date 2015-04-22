@@ -1,0 +1,6 @@
+package ru.novotelnovad.view.rest;
+
+@ApplicationPath("/rest")
+public class RestConfiguration {
+
+}

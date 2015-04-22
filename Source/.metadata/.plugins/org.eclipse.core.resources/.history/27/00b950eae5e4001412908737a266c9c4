@@ -1,0 +1,106 @@
+package ru.novotelnovad.view.classes;
+
+public class test2json {
+	private InitialContext ctx;
+	private MenuEJBLocal menuEJBLocal;
+	private CatEJBLocal catEJBLocal;
+	
+	/**
+	 * Инициализируем соединение для Меню
+	 * @return MenuEJBLocal
+	 */
+	private MenuEJBLocal initializeMenuEJBLocal() {
+		try {
+			ctx = new InitialContext();
+			//JNDI
+			menuEJBLocal = (MenuEJBLocal) ctx.lookup("java:global/App1/Model/MenuEJB");			
+		} catch (Exception e) {
+			
+		}
+		return menuEJBLocal;
+	}
+	
+	/**
+	 * Инициализируем соединение для Категории
+	 * @return CatEJBLocal
+	 */
+	private CatEJBLocal initializeCatEJBLocal() {
+		try {
+			ctx = new InitialContext();
+			//JNDI
+			catEJBLocal = (CatEJBLocal) ctx.lookup("java:global/App1/Model/CatEJB");			
+		} catch (Exception e) {
+			
+		}
+		return catEJBLocal;
+	}
+	
+	/**
+	 * Метод для возврата инициализированного соединения 
+	 * @return MenuEJBLocal
+	 */
+	private MenuEJBLocal getEJBMenuLocal() {
+		if (menuEJBLocal != null) {
+			return menuEJBLocal;
+		} else {
+			return initializeMenuEJBLocal();
+		}
+	}
+	
+	/**
+	 * Метод для возврата инициализированного соединения 
+	 * @return CatEJBLocal
+	 */
+	private CatEJBLocal getEJBCatLocal() {
+		if (catEJBLocal != null) {
+			return catEJBLocal;
+		} else {
+			return initializeCatEJBLocal();
+		}
+	}
+	
+	/**
+	 * Метод для получения коллекции из сущности меню
+	 * @return
+	 */
+	public List<Menu> getMenuAll() {
+		//Обращаемся к бину через его интерфейс
+		try {
+			return (getEJBMenuLocal().getAllMenu());
+		} catch (Exception e) {
+			return null;
+		} 
+	}
+	
+	/**
+	 * Метод для получения коллекции из сущности категории
+	 * @return
+	 */
+	public List<Cat> getCat() {
+		//Обращаемся к бину через его интерфейс
+		try {
+			return (getEJBCatLocal().getAllCat());
+		} catch (Exception e) {
+			return null;
+		} 
+	}
+	
+	/**
+	 * Метод для получения коллекции из сущности меню с учетом ИД
+	 * @param id
+	 * @return
+	 */
+	public List<Menu> getMenuSearchByParam(int id) {
+		return getEJBMenuLocal().getById(id);
+	}
+
+	/**
+	 * Метод осуществляющий поиск по заданным параметрам
+	 * @param id - тип поиска (пример: 1 - по имени, 2 - по цене, 3 - по категории)
+	 * @param value - искомое значение
+	 * @return
+	 */
+	public List<Menu> getMenuByParam(int id, String value) {
+		return getEJBMenuLocal().getMenuByParam(id, value);
+	}
+}

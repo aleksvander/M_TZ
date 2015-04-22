@@ -1,0 +1,114 @@
+package ru.adnovotelnov.ejb;
+
+import java.util.List;
+
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateful;
+import javax.ejb.Stateless;
+import javax.ws.rs.CookieParam;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.QueryParam;
+
+import model_JPA.Task;
+import model_JPA.User;
+import ru.adnovotelnov.ejb.dao.UserDaoEJB;
+
+/**
+ * Session Bean implementation class UserEJB
+ */
+@Stateless(name = "userEJB", mappedName = "ejb/userEJB")
+public class UserEJB implements UserEJBLocal {
+
+	@EJB(name = "userDaoEJB")
+	private UserDaoEJB userDaoEJB;
+	@EJB(name = "taskEJB")
+	private TaskEJB taskEJB;
+	
+	@Override
+	public List<User> getAllUsers() {
+		System.out.println("userDaoEJB " + userDaoEJB);
+		try {
+			return userDaoEJB.findAllEntities();
+		} catch (Exception e) {
+			System.out.println("Exception " + e);
+		}
+		System.out.println("users!" + "");
+		return null;//userDaoEJB.findAllEntities();
+	}
+
+	//Выносим на уровень представления в отдельный класс всю гребанную логику, тут лишь проводим операции с данными
+	//Или нет? По сути то... тут надо определить есть ли такие данные, и если есть то банально вернуть их
+	//Если нет завести новые
+	@Override
+	public boolean getOrCreateUser(@CookieParam("username") @DefaultValue("") String userName) {
+		if (checkExistName(userName)) {
+			return true;
+		} else {
+			try {
+				User user = new User(userName);
+				userDaoEJB.persist(user);
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		}
+	}
+	
+	private boolean checkExistName(String custName) {
+		if (userDaoEJB.findByName(custName).size() != 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	
+	//Более ДАННЫЙ МЕТОД НЕ НУЖЕН, все перенести на плечи TASK EJB
+	@Override
+	public boolean setTaskForUser(@CookieParam("username") @DefaultValue("") String userName,
+			@CookieParam("currenttask") @DefaultValue("") String currentTask) {
+		
+		System.out.println("userName" + userName);
+		System.out.println("currentTask" + currentTask);
+		
+		List<Task> tsk = null;
+		if (userName != null || userName != "") {
+			tsk = taskEJB.getOrCreateTask(currentTask, userName);
+		}
+		
+/*		if (tsk.size() != 0) {
+			try {
+				User user = new User(userName, tsk);
+				userDaoEJB.persist(user);
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		} else {
+			return false;
+		}
+		return false;*/
+	}
+	
+	private int getIdUser(String name) {
+		List<User> lUser = userDaoEJB.findByName(name);
+		if (lUser.size() != 0) {
+			return lUser.get(0).getId();
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	public int getUserIdByName(String name) {
+		return getIdUser(name);
+	}
+
+	@Override
+	public User findById(int id) {
+		return userDaoEJB.findById(id);
+	}
+	
+	
+}

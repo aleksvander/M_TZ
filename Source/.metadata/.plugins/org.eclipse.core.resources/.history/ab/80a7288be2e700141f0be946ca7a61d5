@@ -1,0 +1,17 @@
+--<ScriptOptions statementTerminator=";"/>
+
+CREATE TABLE task (
+	id INT NOT NULL,
+	name VARCHAR(45),
+	last_time DATETIME,
+	summ_time DATETIME,
+	id_user INT,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE user (
+	id INT NOT NULL,
+	Name VARCHAR(20) NOT NULL,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+

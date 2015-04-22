@@ -1,0 +1,44 @@
+package ru.novotelnovad.view.classes;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+/**
+ *
+ * @author Александр
+ */
+@XmlRootElement(name = "person")
+@XmlType(propOrder = {"id", "fullname", "age"})
+public class Person {
+    
+    private int id;
+    private String fullName;
+    private int age;
+
+    @XmlElement
+    public int getId() {
+        return id;
+    }
+
+    @XmlElement
+    public String getFullName() {
+        return fullName;
+    }
+
+    @XmlElement
+    public int getAge() {
+        return age;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+}

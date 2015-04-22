@@ -1,0 +1,131 @@
+package ru.adnovotelnov.ejb;
+
+import java.util.ArrayList; 
+import java.util.List;
+
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateful;
+import javax.ejb.Stateless;
+import javax.ws.rs.CookieParam;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.QueryParam;
+
+import com.google.gson.Gson;
+
+import model_JPA.Task;
+import model_JPA.User;
+import ru.adnovotelnov.classes.ConverterObjToStr;
+import ru.adnovotelnov.ejb.dao.UserDaoEJB;
+
+/**
+ * Session Bean implementation class UserEJB
+ */
+@Stateless(name = "userEJB", mappedName = "ejb/userEJB")
+public class UserEJB implements UserEJBLocal {
+
+	@EJB(name = "userDaoEJB")
+	private UserDaoEJB userDaoEJB;
+	//@EJB(name = "taskEJB")
+	//private TaskEJBLocal taskEJB;
+	
+	private ConverterObjToStr<User> cvrt = new ConverterObjToStr<User>();
+	
+	@Override
+	public List<String> getAllUsers() {
+		try {
+			return null; //userDaoEJB.findAllEntities();
+		} catch (Exception e) {
+			System.out.println("Exception " + e);
+			return null;
+		}
+	}
+
+	//Выносим на уровень представления в отдельный класс всю гребанную логику, тут лишь проводим операции с данными
+	//Или нет? По сути то... тут надо определить есть ли такие данные, и если есть то банально вернуть их
+	//Если нет завести новые
+	@Override
+	public String getOrCreateUser(String userName) {
+		System.out.println("userName by getCreateUser???" + userName);
+		if (userName == null)
+			return null;
+		
+		if (!checkExistAtName(userName)) {
+			try {
+				System.out.println("!!!");
+				User user = new User(userName);
+				userDaoEJB.persist(user);
+			} catch (Exception e) {
+				return null;
+			}
+		}
+		return findByName;//cvrt.convertObjToStr3(userDaoEJB.findByName(userName));
+	}
+	
+	@Override
+	public boolean checkExistName(String userName) {
+		return checkExistAtName(userName);
+	}
+	
+	private boolean checkExistAtName(String userName) {
+		if (userDaoEJB.findByName(userName).size() != 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	
+	/*//Более ДАННЫЙ МЕТОД НЕ НУЖЕН, все перенести на плечи TASK EJB - и имя и ид пользователя?
+	@Override
+	public boolean setTaskForUser(@CookieParam("username") @DefaultValue("") String userName,
+			@CookieParam("currenttask") @DefaultValue("") String currentTask) {
+		
+		System.out.println("userName" + userName);
+		System.out.println("currentTask" + currentTask);
+		
+		List<Task> tsk = null;
+		if (userName != null || userName != "") {
+			tsk = taskEJB.getOrCreateTask(currentTask, userName);
+		}
+		
+		if (tsk.size() != 0) {
+			try {
+				User user = new User(userName, tsk);
+				userDaoEJB.persist(user);
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		} else {
+			return false;
+		}
+		return false;
+	}*/
+	
+	/**
+	 * Т.К. поле имя в таблице Юзверов уникальное, нет смысла реализовать доп логику... и отслеживать его на уровне UI - js..
+	 * @param name
+	 * @return
+	 */
+	private int getIdUser(String name) {
+		List<User> lUser = userDaoEJB.findByName(name);
+		if (lUser.size() != 0) {
+			return lUser.get(0).getId();
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	public int getUserIdByName(String name) {
+		return getIdUser(name);
+	}
+
+	@Override
+	public User findById(int id) {
+		return userDaoEJB.findById(id);
+	}
+	
+	
+}

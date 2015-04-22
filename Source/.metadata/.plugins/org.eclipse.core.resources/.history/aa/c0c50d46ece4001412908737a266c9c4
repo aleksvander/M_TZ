@@ -1,0 +1,8 @@
+package ru.novotelnovad.view.rest;
+
+import javax.ws.rs.ApplicationPath;
+
+@ApplicationPath("/rest")
+public class RestConfiguration {
+	private Set<Class<?>> resources = new HashSet<Class<?>>();
+}

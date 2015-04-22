@@ -1,0 +1,19 @@
+function createCookie(id, name) {
+	//expires - не устанавливаем, пускай удаляются при закрытии браузера
+	document.cookie = id + "=" + name;
+}
+
+function deleteCookie(name) {
+	document.cookie = name.toString() + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+//check cookie
+function get_cookie ( cookie_name )
+{
+  var results = document.cookie.match ( '(^|;) ?' + cookie_name + '=([^;]*)(;|$)' );
+ 
+  if ( results )
+    return ( unescape ( results[2] ) );
+  else
+    return null;
+}

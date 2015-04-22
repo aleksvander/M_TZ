@@ -1,0 +1,18 @@
+package ru.adnovotelnov.ejb.dao;
+
+import javax.ejb.Stateless;
+
+/**
+ * Session Bean implementation class test2
+ */
+@Stateless
+public class test2 implements test2Local {
+
+    /**
+     * Default constructor. 
+     */
+    public test2() {
+        // TODO Auto-generated constructor stub
+    }
+
+}

@@ -1,0 +1,151 @@
+package ru.adnovotelnov.ejb;
+
+import java.util.List;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.persistence.PersistenceException;
+import javax.ws.rs.CookieParam;
+import javax.ws.rs.DefaultValue;
+
+import model_JPA.Task;
+import model_JPA.User;
+import ru.adnovotelnov.classes.ConverterObjToStr;
+import ru.adnovotelnov.ejb.dao.TaskDaoEJB;
+
+/**
+ * Session Bean implementation class TaskEJB
+ */
+@Stateless(mappedName = "taskEJB")
+public class TaskEJB implements TaskEJBLocal {
+
+	@EJB(name = "taskDaoEJB")
+	private TaskDaoEJB taskDaoEJB;
+	@EJB(name = "userEJB")
+	private UserEJBLocal userEJB;
+	
+	private ConverterObjToStr<Task> cvrt = new ConverterObjToStr<Task>();
+
+	@Override
+	public String getOrCreateTask(Integer userId, String currentTask) {
+		System.out.println(currentTask + " ЗАДАЧА " + userId);
+		if (checkNullable(currentTask) || checkNullable(userId))
+			return null;
+		
+		User user = null;;
+		//if (!checkExistTask(currentTask)) {
+			System.out.println("TASK !!???2");
+			try {
+				user = userEJB.findById(userId);
+/*				if (checkAnyExistTaskForUser(userId)) {
+					System.out.println("TRUE !!!!!!!!");
+					if (checkTaskForUser(userId, currentTask)) {
+						user = userEJB.findById(userId);
+						System.out.println("Нашли");
+					}
+				} else {
+					System.out.println("FALSE !!!!!!!!");
+					user = new User();
+					System.out.println("НЕНашли");
+				}*/
+				if (!checkExistTask(currentTask))
+					Task task = taskDaoEJB.findByName(currentTask);//new Task(currentTask, user);
+				taskDaoEJB.persist(task);
+			} catch (Exception e) {
+				System.out.println("Exception : " + e);
+				return null;
+			}
+		//}
+		return cvrt.convertObjToStr2(taskDaoEJB.findByNameAndUserId(currentTask, userId));
+	}
+	
+	private boolean checkAnyExistTaskForUser(Integer userId) {
+		if (checkNullable(userId)) {
+			throw new NullPointerException();
+		}
+		if (taskDaoEJB.findAllTaskByIdUser(userId).size() != 0)
+			return true;
+		return false;
+	}
+
+	@Override
+	public boolean checkTaskForUser(Integer userId, String currentTask) {
+		if (checkNullable(userId) || checkNullable(currentTask))
+			return false;
+		if (taskDaoEJB.findByNameAndUserId(currentTask, userId).size() != 0)
+			return true;
+		return false;
+	}
+
+	@Override
+	public boolean checkExistTask(String currentTask) {
+		if (taskDaoEJB.findByName(currentTask).size() != 0) {
+			System.out.println("ТУТ1 TRUE");
+			return true;
+		} else {
+			System.out.println("ТУТ2 FALSE");
+			return false;
+		}
+	}
+
+	@Override
+	public boolean setTaskTime(Integer userId, Integer taskId, Integer timer) {
+		System.out.println("ТУТ taskId " + taskId + " userId " + userId);
+		
+		if (checkNullable(taskId) || checkNullable(timer))
+			return false;
+		
+		User user = userEJB.findById(userId);
+		
+		try {
+			Task task = taskDaoEJB.findById(taskId);
+			task.setSummTime(timer);
+			taskDaoEJB.persist(task);
+		} catch (PersistenceException e) {
+			System.out.println("PersistenceException : " + e);
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public Integer getTimeForCurrentTaskAndHerUsers(Integer userId, String currentTask) {
+		if (checkNullable(currentTask))
+			return 0;
+		
+		List<Task> tsk = taskDaoEJB.findByNameAndUserId(currentTask, userId);
+		System.out.println(tsk.get(0).getSummTime());
+		return tsk.get(0).getSummTime();
+	}
+	
+	/**
+	 * Метод для поиска ид пользователя по имени
+	 * Т.К. Имена пользователей могут быть только !уникальными!, то вполне допустимо такая логика...
+	 * А значит на стороне JS не выкидывать данные, а возвращать только логическое значение
+	 * @param userName
+	 * @return
+	 */
+	private Integer getUserIdByCurrentTask(String userName) {
+		return userEJB.getUserIdByName(userName);
+	}
+	
+	private boolean checkNullable(String value) {
+		if (value == null || value == "")
+			return true;
+		return false;
+	}
+	
+	private boolean checkNullable(Integer value) {
+		if (value == null || value == 0)
+			return true;
+		return false;
+	}
+
+	@Override
+	public String getAllTask(Integer userId) {
+		if (checkNullable(userId))
+			return null;
+		//System.out.println("!" + taskDaoEJB.findByAllTaskCurentUser(userId));
+		return cvrt.convertObjToStr2(taskDaoEJB.findByAllTaskCurentUser(userId));
+	}
+}

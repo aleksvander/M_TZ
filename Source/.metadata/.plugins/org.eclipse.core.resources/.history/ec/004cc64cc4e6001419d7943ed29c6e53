@@ -1,0 +1,72 @@
+package ru.adnovotelnov.ejb;
+
+import java.util.List;
+
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.ws.rs.CookieParam;
+import javax.ws.rs.DefaultValue;
+
+import model_JPA.Task;
+import model_JPA.User;
+import ru.adnovotelnov.ejb.dao.TaskDaoEJB;
+import ru.adnovotelnov.ejb.dao.UserDaoEJB;
+
+/**
+ * Session Bean implementation class TaskEJB
+ */
+@Stateless(name = "taskEJB", mappedName = "ejb/taskEJB")
+public class TaskEJB2 implements TaskEJBLocal {
+
+	@EJB(name = "taskDaoEJB")
+	private TaskDaoEJB taskDaoEJB;
+	@EJB(name = "userEJB")
+	private UserEJBLocal userEJB;
+
+	/*@Override*/
+	public List<Task> getAllTask() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*@Override*/
+	public List<Task> getByUserIdTask(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public boolean getOrCreateTask(@CookieParam("username") @DefaultValue("") String userName,
+			@CookieParam("currenttask") @DefaultValue("") String currentTask) {
+		int idUser = userEJB.getUserIdByName(userName);
+		User user = userEJB.findById(idUser);
+		if (checkExistTask(currentTask)) {
+			//if(taskDaoEJB.findByNameAndUserId(currentTask, idUser) != null);
+			return true;
+		} else {
+			try {
+				System.out.println("гдеяэ");
+				Task task = new Task(currentTask);
+				task.setName(currentTask);
+				task.setUser(user);
+				taskDaoEJB.persist(task);
+				//return taskDaoEJB.findByNameAndUserId(currentTask, idUser);
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		}
+	}
+	
+	private boolean checkExistTask(String custName) {
+		if (taskDaoEJB.findByName(custName).size() != 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+}

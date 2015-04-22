@@ -1,0 +1,50 @@
+package ru.novotelnovad.view.classes;
+
+import javax.naming.InitialContext;
+
+import ru.adnovotelnov.ejb.UserEJBLocal;
+
+public class test2json {
+	private InitialContext ctx;
+	private UserEJBLocal userEJBLocal;
+	
+	/**
+	 * Инициализируем соединение для Меню
+	 * @return MenuEJBLocal
+	 */
+	private UserEJBLocal initializeUserEJBLocal() {
+		try {
+			ctx = new InitialContext();
+			//JNDI
+			userEJBLocal = (UserEJBLocal) ctx.lookup("java:global/App1/Model/MenuEJB");			
+		} catch (Exception e) {
+			
+		}
+		return userEJBLocal;
+	}
+	
+	/**
+	 * Метод для возврата инициализированного соединения 
+	 * @return MenuEJBLocal
+	 */
+	private MenuEJBLocal getEJBMenuLocal() {
+		if (menuEJBLocal != null) {
+			return menuEJBLocal;
+		} else {
+			return initializeMenuEJBLocal();
+		}
+	}
+	
+	/**
+	 * Метод для получения коллекции из сущности меню
+	 * @return
+	 */
+	public List<Menu> getMenuAll() {
+		//Обращаемся к бину через его интерфейс
+		try {
+			return (getEJBMenuLocal().getAllMenu());
+		} catch (Exception e) {
+			return null;
+		} 
+	}
+}

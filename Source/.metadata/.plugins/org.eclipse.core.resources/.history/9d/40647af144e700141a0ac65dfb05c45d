@@ -1,0 +1,32 @@
+﻿//Видимость
+function onHiddenVisible(isLogin) {
+	var vs = 'visible';
+	var hd = 'hidden';
+	if (!isLogin) {
+		setStyleHTMLDiv('div_login', vs);
+		setStyleHTMLDiv('div_work', hd);
+	} else {
+		setStyleHTMLDiv('div_login', hd);
+		setStyleHTMLDiv('div_work', vs);
+	}
+}
+
+//Стили
+function setStyleHTMLDiv(id, str) {
+	if (id != null) {
+		document.getElementById(id).style.visibility = str;
+	}
+}
+
+
+//Вставка текста
+function innTextInHTML(id, str) {
+	if (id != null) {
+		 document.getElementById(id).innerHTML = '<p>' + str + '</p>';
+	}
+}
+
+//Подтверждение
+function formOnChange(idFormAction) {
+	document.forms[idFormAction].submit();
+}

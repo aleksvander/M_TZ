@@ -1,0 +1,5 @@
+package ru.novotelnovad.view.rest;
+
+public class RestConfiguration {
+
+}

@@ -1,0 +1,5 @@
+package ru.adnovotelnov.ejb.dao;
+
+public abstract class JPADaoEJB {
+
+}

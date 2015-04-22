@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Magenta TZ</title>
+<script language="javascript" type="text/javascript" src="scripts/loadJSON.js"></script>
+<script language="javascript" type="text/javascript" src="scripts/cookie.js"></script>
+<script language="javascript" type="text/javascript" src="scripts/init.js"></script>
+<script language="javascript" type="text/javascript" src="scripts/formedit.js"></script>
+<script language="javascript" type="text/javascript" src="scripts/functions_logic.js"></script>
+<script language="javascript" type="text/javascript" src="scripts/timer.js"></script>
+</head>
+
+<body bgcolor="#FFFFFF"> <!-- onload="initStart()" -->
+<a href="javascript: reload_page()">Обновить</a>
+
+<h3>Авторизация</h3>
+<div id = "div_login" style="visibility: hidden;">
+	<form id = "login" action="index.html">
+	    <input id="loginName" type="text" value=""/>
+	    <input type="hidden" value="LOGIN"/>
+	    <a href="javascript: login('login')">Вход</a>
+    </form>
+</div>
+<div id = "div_nameUser" style="visibility: hidden;"><p>Привет: </p> </div>
+<div id = "div_work" style="visibility: hidden;">
+	<div id = "div_formNameUser">
+		<form id = "logout" action="index.html">    
+		    <input type="hidden" value="LOGOUT"/>
+		    <a href="javascript: login('logout')">Выход</a>
+	    </form>
+    </div>
+    <hr/>
+    <div id = "div_newTask" style="visibility: hidden;">
+    	<div id = "div_newTask">
+	    	<h3>Создать новую задачу</h3>
+	    	<form id = "taskCreate" action="index.html">
+	    		<p>Введите имя задачи: </p><input id="nameTask" type="text" value=""/>
+	    		<input type="hidden" value="CreateTask"/>
+	    		<a href="javascript: createTask(getTextInHTML('nameTask'))">Старт</a>
+	    	</form>
+    	</div>
+    	<div id = "div_currentTask" style="visibility: hidden;">
+    		<h3>Текущая задача</h3>
+    		<form id = "stopTask" action="index.html">
+    			<div id = "div_currentNameTask"></div>
+    			<input type="hidden" value="StopTask"/>
+    			<a href="javascript: deleteCurentTask()">Стоп</a>
+    		</form>
+    		<p>Всего секунд затрачено на задачу: </p>
+    		<span id = "span_current_time"></span>
+    	</div>
+    </div>
+    <br/>
+    <hr/>
+    <div id = "div_allTask">
+    	<h3>Список задач</h3>
+    	<!-- Тут надо будет сделать таблицу с записями -->
+    </div>
+</div>
+
+	<a href="javascript: deleteallcookie2()">DELETE ALL COOKIE</a>
+
+</body>
+</html>

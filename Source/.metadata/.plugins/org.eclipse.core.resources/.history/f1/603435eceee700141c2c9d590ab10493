@@ -1,0 +1,95 @@
+package model_JPA;
+
+import java.io.Serializable;
+
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+
+import java.util.List;
+
+
+/**
+ * The persistent class for the user database table.
+ * 
+ */
+@Entity
+@NamedQueries({
+	@NamedQuery(name="User.findAll", query="SELECT u FROM User u"),
+	@NamedQuery(name="User.findByName", query="SELECT u FROM User u WHERE u.name = :custName")
+	//@NamedQuery(name="User.findByName", query="SELECT u FROM User as u LEFT JOIN FETCH u.tasks")
+	//FROM Node as n LEFT JOIN FETCH n.nodeValues LEFT JOIN FETCH n.nodeStats
+})
+@XmlRootElement
+public class User implements Serializable {
+	private static final long serialVersionUID = 5033132271392778305L;
+
+	public User(String name) { this(name, null); }
+	
+	public User(String name, List<Task> tasks) {
+		super();
+		this.name = name;
+		this.tasks = tasks;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + "]";
+	}
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private int id;
+
+	private String name;
+
+	//bi-directional many-to-one association to Task
+	@OneToMany(mappedBy="user")
+	//http://blog.bdoughan.com/2010/08/creating-restful-web-service-part-35.html
+	@JsonIgnore
+	private List<Task> tasks;
+
+	public User() {
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public List<Task> getTasks() {
+		return this.tasks;
+	}
+
+	public void setTasks(List<Task> tasks) {
+		this.tasks = tasks;
+	}
+
+	public Task addTask(Task task) {
+		getTasks().add(task);
+		task.setUser(this);
+
+		return task;
+	}
+
+	public Task removeTask(Task task) {
+		getTasks().remove(task);
+		task.setUser(null);
+
+		return task;
+	}
+
+}

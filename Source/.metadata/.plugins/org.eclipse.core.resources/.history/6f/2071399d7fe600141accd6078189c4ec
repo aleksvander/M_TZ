@@ -1,0 +1,18 @@
+package ru.adnovotelnov.ejb;
+
+import javax.ejb.Stateless;
+
+/**
+ * Session Bean implementation class TaskEJB
+ */
+@Stateless
+public class TaskEJB implements TaskEJBLocal {
+
+    /**
+     * Default constructor. 
+     */
+    public TaskEJB() {
+        // TODO Auto-generated constructor stub
+    }
+
+}

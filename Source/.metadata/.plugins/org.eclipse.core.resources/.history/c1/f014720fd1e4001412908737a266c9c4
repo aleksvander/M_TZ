@@ -1,0 +1,56 @@
+package ru.novotelnovad.view.classes;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+@Path("rest")
+public class testclass {
+	
+	@Path("/getp")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<String> getAllp() {
+		List<String> lr = new ArrayList<String>();
+		lr.set(0, "1");
+		return lr;
+	}
+	
+    //Should simulate a database
+    private static Map<Integer, Person> persons = new HashMap<Integer, Person>();
+    
+    //insert test data in simulate db
+    static {
+        for (int i = 0; i < 10; i++) {
+            Person person = new Person();
+            int id = i + 1;
+            person.setId(id);
+            person.setFullName("Name : " + id);
+            person.setAge((new Random().nextInt(40)) + 1);
+            
+            persons.put(id, person);
+        }
+    }
+    
+    //Method which should return a single person object in XML format 
+    @GET
+    @Path("/getPersonByIdXML/{id}")
+    @Produces(MediaType.APPLICATION_XML)
+    public Person getPersonByIdXML(@PathParam("id") int id) {
+        
+        return persons.get(id);
+    }
+    
+    //Method which should return single person object in JSON format
+    @GET
+    @Path("/getPersonByIdJSON/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Person getPersonByIdJSON(@PathParam("id") int id) {
+        return persons.get(id);
+    }
+}
