@@ -1,5 +1,0 @@
-package ru.adnovotelnov.dao.interfaces;
-
-public interface IDaoEJB {
-
-}

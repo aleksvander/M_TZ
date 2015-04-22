@@ -1,0 +1,14 @@
+ru\novotelnovad\entity\jpa\User_.class
+ru\novotelnovad\ejb\local\TaskEJBLocal.class
+ru\novotelnovad\ejb\dao\interfaces\IDaoEJB.class
+ru\novotelnovad\classes\ConverterObjToStrJSON.class
+ru\novotelnovad\entity\jpa\User.class
+ru\novotelnovad\entity\jpa\Task.class
+ru\novotelnovad\entity\jpa\Task_.class
+ru\novotelnovad\ejb\dao\UserDaoEJB.class
+ru\novotelnovad\ejb\dao\JPADaoEJB.class
+ru\novotelnovad\ejb\local\UserEJBLocal.class
+ru\novotelnovad\classes\OtherCheckers.class
+ru\novotelnovad\ejb\UserEJB.class
+ru\novotelnovad\ejb\dao\TaskDaoEJB.class
+ru\novotelnovad\ejb\TaskEJB.class
